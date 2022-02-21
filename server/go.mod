@@ -14,6 +14,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-gonic/gin v1.6.3
+	github.com/go-playground/assert v1.2.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gookit/color v1.3.1
@@ -35,6 +36,7 @@ require (
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.19
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/unrolled/secure v1.0.7
+	github.com/urfave/cli/v2 v2.3.0 // indirect
 	github.com/xuri/excelize/v2 v2.4.1
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20220213190939-1e6e3497d506 // indirect

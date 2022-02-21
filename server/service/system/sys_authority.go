@@ -58,7 +58,7 @@ func (authorityService *AuthorityService) CopyAuthority(copyInfo response.SysAut
 		return
 	}
 	paths := CasbinServiceApp.GetPolicyPathByAuthorityId(copyInfo.OldAuthorityId)
-	err = CasbinServiceApp.UpdateCasbin(copyInfo.Authority.AuthorityId, paths)
+	err = CasbinServiceApp.UpdateCasbin(strconv.Itoa(int(copyInfo.Authority.AuthorityId)), paths)
 	if err != nil {
 		_ = authorityService.DeleteAuthority(&copyInfo.Authority)
 	}
@@ -113,7 +113,7 @@ func (authorityService *AuthorityService) DeleteAuthority(auth *system.SysAuthor
 		}
 	}
 	err = global.GVA_DB.Delete(&[]system.SysUseAuthority{}, "sys_authority_authority_id = ?", auth.AuthorityId).Error
-	CasbinServiceApp.ClearCasbin(0, auth.AuthorityId)
+	CasbinServiceApp.ClearCasbin(0, strconv.Itoa(int(auth.AuthorityId)))
 	return err
 }
 

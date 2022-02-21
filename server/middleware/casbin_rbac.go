@@ -6,6 +6,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 )
 
 var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
@@ -22,11 +24,12 @@ func CasbinHandler() gin.HandlerFunc {
 		sub := waitUse.AuthorityId
 		e := casbinService.Casbin()
 		// 判断策略中是否存在
-		success, _ := e.Enforce(sub, obj, act)
+		print(sub, obj, act)
+		success, _ := e.Enforce(strconv.Itoa(int(sub)), obj, act)
 		if global.GVA_CONFIG.System.Env == "develop" || success {
 			c.Next()
 		} else {
-			response.FailWithDetailed(gin.H{}, "权限不足", c)
+			response.Error(c, http.StatusForbidden, response.Response{Msg: "权限不足"})
 			c.Abort()
 			return
 		}

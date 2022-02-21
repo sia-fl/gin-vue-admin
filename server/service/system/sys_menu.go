@@ -2,6 +2,7 @@ package system
 
 import (
 	"errors"
+	systemReq "github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
 	"strconv"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -16,16 +17,29 @@ import (
 //@param: authorityId string
 //@return: err error, treeMap map[string][]model.SysMenu
 
-type MenuService struct{}
+type MenuService struct {
+	*systemReq.CustomClaims
+}
 
 var MenuServiceApp = new(MenuService)
 
-func (menuService *MenuService) getMenuTreeMap(authorityId string) (err error, treeMap map[string][]system.SysMenu) {
+func (menuService *MenuService) getMenuTreeMap() (err error, treeMap map[string][]system.SysMenu) {
 	var allMenus []system.SysMenu
 	treeMap = make(map[string][]system.SysMenu)
-	err = global.GVA_DB.Where("authority_id = ?", authorityId).Order("sort").Preload("Parameters").Find(&allMenus).Error
+	query := global.GVA_DB.
+		Where("authority_id = ?", menuService.AuthorityId)
+	if menuService.ID != 1 {
+		query = query.
+			Where("development != ?", true)
+	}
+	err = query.
+		Order("sort").
+		Preload("Parameters").
+		Find(&allMenus).
+		Error
 	for _, v := range allMenus {
-		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
+		idKey := strconv.Itoa(int(v.ParentId))
+		treeMap[idKey] = append(treeMap[idKey], v)
 	}
 	return err, treeMap
 }
@@ -36,8 +50,8 @@ func (menuService *MenuService) getMenuTreeMap(authorityId string) (err error, t
 //@param: authorityId string
 //@return: err error, menus []model.SysMenu
 
-func (menuService *MenuService) GetMenuTree(authorityId string) (err error, menus []system.SysMenu) {
-	err, menuTree := menuService.getMenuTreeMap(authorityId)
+func (menuService *MenuService) GetMenuTree() (err error, menus []system.SysMenu) {
+	err, menuTree := menuService.getMenuTreeMap()
 	menus = menuTree["0"]
 	for i := 0; i < len(menus); i++ {
 		err = menuService.getChildrenList(&menus[i], menuTree)
@@ -111,7 +125,8 @@ func (menuService *MenuService) getBaseMenuTreeMap() (err error, treeMap map[str
 	treeMap = make(map[string][]system.SysBaseMenu)
 	err = global.GVA_DB.Order("sort").Preload("Parameters").Find(&allMenus).Error
 	for _, v := range allMenus {
-		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
+		idKey := strconv.Itoa(int(v.ParentId))
+		treeMap[idKey] = append(treeMap[idKey], v)
 	}
 	return err, treeMap
 }
@@ -136,7 +151,7 @@ func (menuService *MenuService) GetBaseMenuTree() (err error, menus []system.Sys
 //@param: menus []model.SysBaseMenu, authorityId string
 //@return: err error
 
-func (menuService *MenuService) AddMenuAuthority(menus []system.SysBaseMenu, authorityId string) (err error) {
+func (menuService *MenuService) AddMenuAuthority(menus []system.SysBaseMenu, authorityId uint) (err error) {
 	var auth system.SysAuthority
 	auth.AuthorityId = authorityId
 	auth.SysBaseMenus = menus

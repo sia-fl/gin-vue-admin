@@ -1,9 +1,10 @@
 package request
 
 import (
+	"database/sql"
 	"fmt"
-
 	"github.com/flipped-aurora/gin-vue-admin/server/config"
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
 )
 
 type InitDB struct {
@@ -13,6 +14,29 @@ type InitDB struct {
 	UserName string `json:"userName" binding:"required"` // 数据库用户名
 	Password string `json:"password"`                    // 数据库密码
 	DBName   string `json:"dbName" binding:"required"`   // 数据库名
+}
+
+func NewInitDb() *InitDB {
+	i := &InitDB{}
+	conf := global.GVA_CONFIG
+	if conf.Mysql.Path != "" {
+		myConf := global.GVA_CONFIG.Mysql
+		i.DBType = "mysql"
+		i.Host = myConf.Path
+		i.Port = myConf.Port
+		i.UserName = myConf.Username
+		i.Password = myConf.Password
+		i.DBName = myConf.Dbname
+	} else if conf.Pgsql.Path != "" {
+		pgConf := global.GVA_CONFIG.Mysql
+		i.DBType = "pgsql"
+		i.Host = pgConf.Path
+		i.Port = pgConf.Port
+		i.UserName = pgConf.Username
+		i.Password = pgConf.Password
+		i.DBName = pgConf.Dbname
+	}
+	return i
 }
 
 // MysqlEmptyDsn msyql 空数据库 建库链接
@@ -34,7 +58,7 @@ func (i *InitDB) PgsqlEmptyDsn() string {
 		i.Host = "127.0.0.1"
 	}
 	if i.Port == "" {
-		i.Port = "3306"
+		i.Port = "3456"
 	}
 	return "host=" + i.Host + " user=" + i.UserName + " password=" + i.Password + " port=" + i.Port + " " + "sslmode=disable TimeZone=Asia/Shanghai"
 }
@@ -69,4 +93,23 @@ func (i *InitDB) ToPgsqlConfig() config.Pgsql {
 		LogMode:      "error",
 		Config:       "sslmode=disable TimeZone=Asia/Shanghai",
 	}
+}
+
+func (i *InitDB) InitSqlDb() *sql.DB {
+	dns := ""
+	drive := "mysql"
+	switch i.DBType {
+	case "mysql":
+		dns = i.MysqlEmptyDsn()
+		break
+	case "pgsql":
+		dns = i.PgsqlEmptyDsn()
+		drive = "pgx"
+		break
+	}
+	db, err := sql.Open(drive, dns)
+	if err != nil {
+		panic(err)
+	}
+	return db
 }

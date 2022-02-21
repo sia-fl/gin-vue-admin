@@ -2,12 +2,12 @@ package request
 
 // User register structure
 type Register struct {
-	Username     string   `json:"userName"`
-	Password     string   `json:"passWord"`
-	NickName     string   `json:"nickName" gorm:"default:'QMPlusUser'"`
-	HeaderImg    string   `json:"headerImg" gorm:"default:'https://qmplusimg.henrongyi.top/gva_header.jpg'"`
-	AuthorityId  string   `json:"authorityId" gorm:"default:888"`
-	AuthorityIds []string `json:"authorityIds"`
+	Username     string `json:"userName"`
+	Password     string `json:"passWord"`
+	NickName     string `json:"nickName" gorm:"default:'QMPlusUser'"`
+	HeaderImg    string `json:"headerImg" gorm:"default:'https://qmplusimg.henrongyi.top/gva_header.jpg'"`
+	AuthorityId  uint   `json:"authorityId" gorm:"default:1"`
+	AuthorityIds []uint `json:"authorityIds"`
 }
 
 // User login structure
@@ -27,11 +27,11 @@ type ChangePasswordStruct struct {
 
 // Modify  user's auth structure
 type SetUserAuth struct {
-	AuthorityId string `json:"authorityId"` // 角色ID
+	AuthorityId uint `json:"authorityId"` // 角色ID
 }
 
 // Modify  user's auth structure
 type SetUserAuthorities struct {
 	ID           uint
-	AuthorityIds []string `json:"authorityIds"` // 角色ID
+	AuthorityIds []uint `json:"authorityIds"` // 角色ID
 }

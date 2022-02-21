@@ -6,14 +6,15 @@ import (
 
 type SysBaseMenu struct {
 	global.GVA_MODEL
+	Meta          `json:"meta" gorm:"comment:附加属性"` // 附加属性
 	MenuLevel     uint                              `json:"-"`
-	ParentId      string                            `json:"parentId" gorm:"comment:父菜单ID"`     // 父菜单ID
+	ParentId      uint                              `json:"parentId" gorm:"comment:父菜单ID"`     // 父菜单ID
 	Path          string                            `json:"path" gorm:"comment:路由path"`        // 路由path
 	Name          string                            `json:"name" gorm:"comment:路由name"`        // 路由name
 	Hidden        bool                              `json:"hidden" gorm:"comment:是否在列表隐藏"`     // 是否在列表隐藏
 	Component     string                            `json:"component" gorm:"comment:对应前端文件路径"` // 对应前端文件路径
 	Sort          int                               `json:"sort" gorm:"comment:排序标记"`          // 排序标记
-	Meta          `json:"meta" gorm:"comment:附加属性"` // 附加属性
+	Development   bool                              `json:"development" gorm:"comment:开发人员使用"` // 开发人员使用
 	SysAuthoritys []SysAuthority                    `json:"authoritys" gorm:"many2many:sys_authority_menus;"`
 	Children      []SysBaseMenu                     `json:"children" gorm:"-"`
 	Parameters    []SysBaseMenuParameter            `json:"parameters"`

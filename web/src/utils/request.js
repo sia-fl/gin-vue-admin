@@ -84,7 +84,13 @@ service.interceptors.response.use(
   },
   error => {
     closeLoading()
+    const userStore = useUserStore()
     switch (error.response.status) {
+      case 403:
+        userStore.token = ''
+        localStorage.clear()
+        router.push({ name: 'Login', replace: true })
+        break
       case 500:
         ElMessageBox.confirm(`
         <p>检测到接口错误${error}</p>

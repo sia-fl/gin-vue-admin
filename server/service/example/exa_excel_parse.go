@@ -14,10 +14,10 @@ type ExcelService struct{}
 
 func (exa *ExcelService) ParseInfoList2Excel(infoList []system.SysBaseMenu, filePath string) error {
 	excel := excelize.NewFile()
-	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "路由Name", "路由Path", "是否隐藏", "父节点", "排序", "文件名称"})
+	_ = excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "路由Name", "路由Path", "是否隐藏", "父节点", "排序", "文件名称"})
 	for i, menu := range infoList {
 		axis := fmt.Sprintf("A%d", i+2)
-		excel.SetSheetRow("Sheet1", axis, &[]interface{}{
+		_ = excel.SetSheetRow("Sheet1", axis, &[]interface{}{
 			menu.ID,
 			menu.Name,
 			menu.Path,
@@ -62,6 +62,7 @@ func (exa *ExcelService) ParseExcel2InfoList() ([]system.SysBaseMenu, error) {
 		id, _ := strconv.Atoi(row[0])
 		hidden, _ := strconv.ParseBool(row[3])
 		sort, _ := strconv.Atoi(row[5])
+		parentId, _ := strconv.Atoi(row[4])
 		menu := system.SysBaseMenu{
 			GVA_MODEL: global.GVA_MODEL{
 				ID: uint(id),
@@ -69,7 +70,7 @@ func (exa *ExcelService) ParseExcel2InfoList() ([]system.SysBaseMenu, error) {
 			Name:      row[1],
 			Path:      row[2],
 			Hidden:    hidden,
-			ParentId:  row[4],
+			ParentId:  uint(parentId),
 			Sort:      sort,
 			Component: row[6],
 		}

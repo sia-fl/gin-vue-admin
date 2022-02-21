@@ -15,6 +15,7 @@ import (
 
 type AuthorityMenuApi struct{}
 
+// GetMenu
 // @Tags AuthorityMenu
 // @Summary 获取用户动态路由
 // @Security ApiKeyAuth
@@ -23,7 +24,9 @@ type AuthorityMenuApi struct{}
 // @Success 200 {object} response.Response{data=systemRes.SysMenusResponse,msg=string} "获取用户动态路由,返回包括系统菜单详情列表"
 // @Router /menu/getMenu [post]
 func (a *AuthorityMenuApi) GetMenu(c *gin.Context) {
-	if err, menus := menuService.GetMenuTree(utils.GetUserAuthorityId(c)); err != nil {
+	userinfo := utils.GetUserInfo(c)
+	menuService.CustomClaims = userinfo
+	if err, menus := menuService.GetMenuTree(); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -34,6 +37,7 @@ func (a *AuthorityMenuApi) GetMenu(c *gin.Context) {
 	}
 }
 
+// GetBaseMenuTree
 // @Tags AuthorityMenu
 // @Summary 获取用户动态路由
 // @Security ApiKeyAuth

@@ -31,6 +31,7 @@ func (a *viewAuthorityMenuPostgres) Initialize() error {
 		   @menus.hidden                   as hidden,
 		   @menus.parent_id                as parent_id,
 		   @menus.component                as component,
+           @menus.development              as development,
 		   @menus.keep_alive               as keep_alive,
 		   @menus.created_at               as created_at,
 		   @menus.updated_at               as updated_at,

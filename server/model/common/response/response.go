@@ -30,6 +30,13 @@ func Ok(c *gin.Context) {
 	Result(SUCCESS, map[string]interface{}{}, "操作成功", c)
 }
 
+func Error(c *gin.Context, httpCode int, response Response) {
+	if response.Code == 0 {
+		response.Code = ERROR
+	}
+	c.JSON(httpCode, response)
+}
+
 func OkWithMessage(message string, c *gin.Context) {
 	Result(SUCCESS, map[string]interface{}{}, message, c)
 }

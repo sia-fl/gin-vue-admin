@@ -8,6 +8,7 @@ import (
 	systemReq "github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
 	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -35,7 +36,7 @@ func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
 		response.FailWithMessage("创建失败"+err.Error(), c)
 	} else {
 		_ = menuService.AddMenuAuthority(systemReq.DefaultMenu(), authority.AuthorityId)
-		_ = casbinService.UpdateCasbin(authority.AuthorityId, systemReq.DefaultCasbin())
+		_ = casbinService.UpdateCasbin(strconv.Itoa(int(authority.AuthorityId)), systemReq.DefaultCasbin())
 		response.OkWithDetailed(systemRes.SysAuthorityResponse{Authority: authBack}, "创建成功", c)
 	}
 }

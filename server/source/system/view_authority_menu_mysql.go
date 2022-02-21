@@ -30,6 +30,7 @@ func (v *viewAuthorityMenuMysql) Initialize() error {
 		   @menus.title             AS title,
 		   @menus.hidden            AS hidden,
 		   @menus.component         AS component,
+           @menus.development       AS development,
 		   @menus.parent_id         AS parent_id,
 		   @menus.created_at        AS created_at,
 		   @menus.updated_at        AS updated_at,

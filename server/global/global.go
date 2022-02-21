@@ -1,6 +1,7 @@
 package global
 
 import (
+	"database/sql"
 	"sync"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/utils/timer"
@@ -19,6 +20,7 @@ import (
 
 var (
 	GVA_DB     *gorm.DB
+	GVA_SQL_DB *sql.DB
 	GVA_DBList map[string]*gorm.DB
 	GVA_REDIS  *redis.Client
 	GVA_CONFIG config.Server

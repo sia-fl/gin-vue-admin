@@ -21,11 +21,11 @@ func (a *dataAuthorities) TableName() string {
 
 func (a *dataAuthorities) Initialize() error {
 	entities := []AuthoritiesResources{
-		{AuthorityId: "888", ResourcesId: "888"},
-		{AuthorityId: "888", ResourcesId: "8881"},
-		{AuthorityId: "888", ResourcesId: "9528"},
-		{AuthorityId: "9528", ResourcesId: "8881"},
-		{AuthorityId: "9528", ResourcesId: "9528"},
+		{AuthorityId: 1, ResourcesId: 1},
+		{AuthorityId: 1, ResourcesId: 2},
+		{AuthorityId: 1, ResourcesId: 3},
+		{AuthorityId: 2, ResourcesId: 2},
+		{AuthorityId: 2, ResourcesId: 3},
 	}
 	if err := global.GVA_DB.Create(&entities).Error; err != nil {
 		return errors.Wrap(err, a.TableName()+"表数据初始化失败!")
@@ -34,7 +34,7 @@ func (a *dataAuthorities) Initialize() error {
 }
 
 func (a *dataAuthorities) CheckDataExist() bool {
-	if errors.Is(global.GVA_DB.Where("sys_authority_authority_id = ? AND data_authority_id_authority_id = ?", "9528", "9528").First(&AuthoritiesResources{}).Error, gorm.ErrRecordNotFound) { // 判断是否存在数据
+	if errors.Is(global.GVA_DB.Where("sys_authority_authority_id = ? AND data_authority_id_authority_id = ?", 3, 3).First(&AuthoritiesResources{}).Error, gorm.ErrRecordNotFound) { // 判断是否存在数据
 		return false
 	}
 	return true
@@ -42,8 +42,8 @@ func (a *dataAuthorities) CheckDataExist() bool {
 
 // AuthoritiesResources 角色资源表
 type AuthoritiesResources struct {
-	AuthorityId string `gorm:"column:sys_authority_authority_id"`
-	ResourcesId string `gorm:"column:data_authority_id_authority_id"`
+	AuthorityId uint `gorm:"column:sys_authority_authority_id"`
+	ResourcesId uint `gorm:"column:data_authority_id_authority_id"`
 }
 
 func (a *AuthoritiesResources) TableName() string {
